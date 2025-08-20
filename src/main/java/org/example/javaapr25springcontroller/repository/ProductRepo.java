@@ -3,6 +3,7 @@ package org.example.javaapr25springcontroller.repository;
 import org.example.javaapr25springcontroller.entity.Product;
 import org.example.javaapr25springcontroller.util.SqlConstants;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
@@ -32,7 +33,23 @@ public class ProductRepo {
 			}
 		};
 
-		List<Product> products = jdbcTemplate.query(SqlConstants.FETCH_PRODUCT, rowMapper);
+		List<Product> products = jdbcTemplate.query(SqlConstants.FETCH_ALL_PRODUCT, rowMapper);
 		return products;
+	}
+
+	public Product getProductWithBeanPropertyRM(int id) {
+		return jdbcTemplate.queryForObject(SqlConstants.FETCH_PRODUCT_BY_ID, new BeanPropertyRowMapper<>(Product.class), id);
+	}
+
+	public int addProduct(Product product) {
+		return jdbcTemplate.update(SqlConstants.ADD_PRODUCT,product.getProductId(), product.getProductName(), product.getProductDesc());
+	}
+
+	public int updateProduct(int id,  Product product) {
+		return jdbcTemplate.update(SqlConstants.UPDATE_PRODUCT,product.getProductName(), product.getProductDesc(),id);
+	}
+
+	public int deleteProduct(int id) {
+		return jdbcTemplate.update(SqlConstants.DELETE_PRODUCT,id);
 	}
 }

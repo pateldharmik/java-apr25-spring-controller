@@ -12,8 +12,29 @@ public class ProductService {
 	@Autowired
 	ProductRepo productRepo;
 
+	//Get all products
 	public List<Product> getAllProducts(){
 
 		return productRepo.getAllProducts();
+	}
+
+	//Get product by ID
+	public Product getProductById(int id){
+		return productRepo.getProductWithBeanPropertyRM(id);
+	}
+
+	//Add a product
+	public void addProduct(Product product){
+		productRepo.addProduct(product);
+	}
+
+	//Update a product
+	public void updateProduct(int id, Product product){
+		productRepo.updateProduct(id,product);
+	}
+
+	//Delete a product
+	public void deleteProduct(int id){
+		productRepo.deleteProduct(id);
 	}
 }
