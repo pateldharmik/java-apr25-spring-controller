@@ -4,10 +4,11 @@ import org.example.javaapr25springcontroller.entity.Product;
 import org.example.javaapr25springcontroller.repository.ProductRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Component
+@Service
 public class ProductService {
 	@Autowired
 	ProductRepo productRepo;
