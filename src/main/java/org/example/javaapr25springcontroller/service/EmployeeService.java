@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class EmployeeService {
@@ -24,18 +26,44 @@ public class EmployeeService {
 	}
 
 	//Get employee by ID
-	public Employee getEmployeeById(int id) {
-		return employeeRepo.findById(id).get();
+	public Optional<Employee> getEmployeeById(int id) {
+		return employeeRepo.findById(id);
 	}
 
-	//Update Employee
-	public Employee updateEmployee(Employee employeeDetails, int id) {
-		Employee employee = getEmployeeById(id);
-		employee.setFirstName(employeeDetails.getFirstName());
-		employee.setLastName(employeeDetails.getLastName());
-		employee.setPhoneNumber(employeeDetails.getPhoneNumber());
-		employee.setCompany(employeeDetails.getCompany());
-		return employeeRepo.save(employee);
+	//Get employee by Name ---> Custom "findByName" method.
+	public List<Employee> getEmployeeByName(String firstName) {
+		return employeeRepo.findAllByFirstName(firstName);
+	}
+
+	//Update Employee (PUT Mapping)
+	public Employee updateEmployee(Employee employee) {
+		Optional<Employee> optionalEmployee = getEmployeeById(employee.getEmployeeId());
+		if (optionalEmployee.isPresent()) {
+			employee = employeeRepo.save(employee);
+		}
+		return employee;
+	}
+
+	//Update Employee (PATCH Mapping)
+	public Employee patchEmployee(Employee dto) {
+		Optional<Employee> optionalEmployee = getEmployeeById(dto.getEmployeeId());
+		if (optionalEmployee.isPresent()) {
+			Employee entity = optionalEmployee.get();
+			if (Objects.nonNull(dto.getFirstName())){
+				entity.setFirstName(dto.getFirstName());
+			}
+			if (Objects.nonNull(dto.getLastName())){
+				entity.setLastName(dto.getLastName());
+			}
+			if (Objects.nonNull(dto.getPhoneNumber())){
+				entity.setPhoneNumber(dto.getPhoneNumber());
+			}
+			if (Objects.nonNull(dto.getCompany())){
+				entity.setCompany(dto.getCompany());
+			}
+			return employeeRepo.save(entity);
+		}
+		return null;
 	}
 
 	//Delete Employee

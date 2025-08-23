@@ -59,3 +59,6 @@
     All interfaces
 
 1. Actual features are in Hibernate. We have to use JPA to access that features.
+
+
+## Singleton or Double locked Singleton + Design Pattern (behavior or Structural) + Any one (Not builder)

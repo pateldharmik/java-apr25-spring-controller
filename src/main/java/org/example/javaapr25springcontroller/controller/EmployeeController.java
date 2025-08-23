@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/employee")
@@ -14,29 +15,44 @@ public class EmployeeController {
 	@Autowired
 	EmployeeService employeeService;
 
+	//Add new Employee
 	@PostMapping("/add")
 	public Employee addEmployees(@RequestBody Employee employee) {
 		return employeeService.addEmployee(employee);
 	}
 
+	//Get all Employee's
 	@GetMapping("/getAll")
 	public List<Employee> getAllEmployees() {
 		return employeeService.getAllEmployees();
 	}
 
+	//Get Employee by ID
 	@GetMapping("/get/{id}")
-	public Employee getEmployeeById(@PathVariable int id) {
+	public Optional<Employee> getEmployeeById(@PathVariable int id) {
 		return employeeService.getEmployeeById(id);
 	}
-
-	@PutMapping("{id}")
-	public Employee updateEmployee(@RequestBody Employee employee,@PathVariable int id) {
-		return employeeService.updateEmployee(employee,id);
+	//Get Employee by Name
+	@GetMapping("/get/{firstName}")
+	public List<Employee> getEmployeeByName(@PathVariable String firstName) {
+		return employeeService.getEmployeeByName(firstName);
 	}
 
+	//Update Employee using PUT ---> update all the data. If new data not given then update with 'null'
+	@PutMapping("/update")
+	public Employee updateEmployee(@RequestBody Employee employee) {
+		return employeeService.updateEmployee(employee);
+	}
+
+	//Update Employee using PATCH ---> update only part of the data that is given. Keep rest data same.
+	@PatchMapping("/patch")
+	public Employee patchEmployee(@RequestBody Employee employee) {
+		return employeeService.patchEmployee(employee);
+	}
+
+	//Delete Employee
 	@DeleteMapping("{id}")
-	public String deleteEmployee(@PathVariable int id) {
+	public void deleteEmployee(@PathVariable int id) {
 		employeeService.deleteEmployee(id);
-		return "Employee deleted successfully!!!";
 	}
 }
