@@ -1,13 +1,21 @@
 package org.example.javaapr25springcontroller.service;
 
+import org.example.javaapr25springcontroller.dto.EmployeeDTO;
+import org.example.javaapr25springcontroller.entity.Department;
 import org.example.javaapr25springcontroller.entity.Employee;
+import org.example.javaapr25springcontroller.repository.DepartmentRepo;
+import org.example.javaapr25springcontroller.repository.EmployeeMachineRepo;
 import org.example.javaapr25springcontroller.repository.EmployeeRepo;
+import org.example.javaapr25springcontroller.repository.EmployeeReviewsRepo;
+import org.example.javaapr25springcontroller.util.EmployeeDtoConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class EmployeeService {
@@ -15,14 +23,52 @@ public class EmployeeService {
 	@Autowired
 	EmployeeRepo employeeRepo;
 
+	@Autowired
+	EmployeeMachineRepo employeeMachineRepo;
+
+	@Autowired
+	EmployeeReviewsRepo employeeReviewsRepo;
+
+	@Autowired
+	DepartmentRepo departmentRepo;
+
 	//Add new Employee
 	public Employee addEmployee(Employee employee) {
+/*
+
+		List<EmployeeReviews> employeeReviews = employeeReviewsRepo.saveAll(employee.getEmployeeReviews());
+		employee.setEmployeeReviews(employeeReviews);
+
+		EmployeeMachine savedEmployeeMachine = employeeMachineRepo.save(employee.getEmployeeMachine());
+		employee.setEmployeeMachine(savedEmployeeMachine);
+*/
+
 		return employeeRepo.save(employee);
 	}
+
+	/*
+	public EmployeeDTO addEmployee(EmployeeDTO dto) {
+
+		Department department = null;
+
+		Employee employee = EmployeeDtoConverter.dtoToEntity(dto, department);
+		Employee saved = employeeRepo.save(employee);
+		return EmployeeDtoConverter.entityToDto(saved);
+	}
+*/
 
 	//Get all employee
 	public List<Employee> getAllEmployees() {
 		return employeeRepo.findAll();
+	}
+
+	//Get employees using DTO
+	public List<EmployeeDTO> getAllEmployeeDTOs() {
+		List<Employee> employee =employeeRepo.findAll();
+		return employee.stream()
+				.map(EmployeeDtoConverter::entityToDto)
+				.collect(Collectors.toList());
+
 	}
 
 	//Get employee by ID
@@ -49,16 +95,16 @@ public class EmployeeService {
 		Optional<Employee> optionalEmployee = getEmployeeById(dto.getEmployeeId());
 		if (optionalEmployee.isPresent()) {
 			Employee entity = optionalEmployee.get();
-			if (Objects.nonNull(dto.getFirstName())){
+			if (Objects.nonNull(dto.getFirstName())) {
 				entity.setFirstName(dto.getFirstName());
 			}
-			if (Objects.nonNull(dto.getLastName())){
+			if (Objects.nonNull(dto.getLastName())) {
 				entity.setLastName(dto.getLastName());
 			}
-			if (Objects.nonNull(dto.getPhoneNumber())){
+			if (Objects.nonNull(dto.getPhoneNumber())) {
 				entity.setPhoneNumber(dto.getPhoneNumber());
 			}
-			if (Objects.nonNull(dto.getCompany())){
+			if (Objects.nonNull(dto.getCompany())) {
 				entity.setCompany(dto.getCompany());
 			}
 			return employeeRepo.save(entity);

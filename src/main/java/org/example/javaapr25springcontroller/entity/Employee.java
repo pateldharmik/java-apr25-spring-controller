@@ -6,11 +6,15 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.List;
+
 @Getter
 @Setter
 @ToString
 @EqualsAndHashCode
+
 @Entity
+@Table(name = "EMP")
 public class Employee {
 
 	@Id
@@ -26,4 +30,14 @@ public class Employee {
 	private String phoneNumber;
 
 	private String company;
+
+	@OneToOne(cascade = CascadeType.ALL)
+	private EmployeeMachine employeeMachine;
+
+	@OneToMany(cascade = CascadeType.ALL)
+	private List<EmployeeReviews> employeeReviews;
+
+	@ManyToOne(cascade = CascadeType.ALL)
+	private Department department;
+
 }

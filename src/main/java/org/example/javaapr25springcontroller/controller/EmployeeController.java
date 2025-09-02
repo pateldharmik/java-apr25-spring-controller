@@ -1,8 +1,11 @@
 package org.example.javaapr25springcontroller.controller;
 
+import org.example.javaapr25springcontroller.dto.EmployeeDTO;
 import org.example.javaapr25springcontroller.entity.Employee;
 import org.example.javaapr25springcontroller.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,8 +20,15 @@ public class EmployeeController {
 
 	//Add new Employee
 	@PostMapping("/add")
-	public Employee addEmployees(@RequestBody Employee employee) {
-		return employeeService.addEmployee(employee);
+	public ResponseEntity<Employee> addEmployees(@RequestBody Employee employee) {
+		Employee createdEmployee = employeeService.addEmployee(employee);
+		ResponseEntity<Employee> responseEntityEmployee = ResponseEntity
+				.status(HttpStatusCode.valueOf(201))
+				.header("content-type", "application/json")
+				.header("status","201")
+				.body(createdEmployee);
+
+		return responseEntityEmployee;
 	}
 
 	//Get all Employee's
@@ -27,11 +37,18 @@ public class EmployeeController {
 		return employeeService.getAllEmployees();
 	}
 
+	//Get all Employee's using DTOs
+	@GetMapping("/getAllDto")
+	public List<EmployeeDTO>  getAllDtoEmployees() {
+		return employeeService.getAllEmployeeDTOs();
+	}
+
 	//Get Employee by ID
 	@GetMapping("/get/{id}")
 	public Optional<Employee> getEmployeeById(@PathVariable int id) {
 		return employeeService.getEmployeeById(id);
 	}
+
 	//Get Employee by Name
 	@GetMapping("/get/{firstName}")
 	public List<Employee> getEmployeeByName(@PathVariable String firstName) {
@@ -51,7 +68,7 @@ public class EmployeeController {
 	}
 
 	//Delete Employee
-	@DeleteMapping("{id}")
+	@DeleteMapping("/{id}")
 	public void deleteEmployee(@PathVariable int id) {
 		employeeService.deleteEmployee(id);
 	}
